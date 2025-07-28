@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Credit Score Calculator</title>
+</head>
+<body>
+    <h2>Credit Score & Risk Category Calculator</h2>
+    <form id="scoreForm">
+        <label>Payment Delay (Days): <input type="number" id="payment_delay" required></label><br>
+        <label>Past Due Amount (Lakhs): <input type="number" id="past_due" min="0" required></label><br>
+        <label>Credit Limit (Lakhs): <input type="number" id="credit_limit" min="1" required></label><br>
+        <label>Bounced Cheques: <input type="number" id="bounced_cheques" min="0" required></label><br>
+        <label>Years with Salcomp: <input type="number" id="years_with_salcomp" min="0" required></label><br>
+        <button type="submit">Calculate</button>
+    </form>
+    <div id="result" style="margin-top: 20px;"></div>
+    <script>
+        document.getElementById('scoreForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const data = {
+                payment_delay: parseFloat(document.getElementById('payment_delay').value),
+                past_due: parseFloat(document.getElementById('past_due').value),
+                credit_limit: parseFloat(document.getElementById('credit_limit').value),
+                bounced_cheques: parseFloat(document.getElementById('bounced_cheques').value),
+                years_with_salcomp: parseFloat(document.getElementById('years_with_salcomp').value)
+            };
+            const res = await fetch('/calculate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            document.getElementById('result').innerHTML =
+                '<b>Credit Score:</b> ' + result.credit_score +
+                '<br><b>Risk Category:</b> ' + result.risk_category;
+        };
+    </script>
+</body>
+</html>
